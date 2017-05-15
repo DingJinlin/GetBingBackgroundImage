@@ -14,6 +14,7 @@ imageDir = "./images/"
 bakDir = "./baks/"
 #url = "http://global.bing.com/?FORM=HPCNEN&setmkt=en-us&setlang=en-us"
 URL = "http://cn.bing.com/"
+wallpaperFileName = "1.jpg"
 
 def getHtml(url):
     # page = urllib.urlopen(url)
@@ -41,14 +42,30 @@ def saveImg(imgList):
         imgUrl = URL + imgUrl
         if len(fileNameList) > 0:
             fileName = fileNameList[0]
-            if not os.path.isfile(imageDir + fileName):
-                if os.path.isdir(imageDir):
-                    if not os.path.isdir(bakDir):
-                        os.mkdir(bakDir)
-                    moveDir(imageDir, bakDir)
-                else:
-                    os.mkdir(imageDir)
-                urllib.request.urlretrieve(imgUrl, imageDir + fileName)
+
+            if not os.path.isdir(bakDir):
+                os.mkdir(bakDir)
+
+            if not os.path.isdir(imageDir):
+                os.mkdir(imageDir)
+
+            if not os.path.isfile(bakDir + fileName):
+                urllib.request.urlretrieve(imgUrl, bakDir + fileName)
+                os.remove(imageDir + wallpaperFileName);
+
+            if not os.path.isfile(imageDir + wallpaperFileName):
+                os.symlink(os.path.abspath(bakDir) + "/" + fileName, imageDir + wallpaperFileName)
+
+
+            # if not os.path.isfile(bakDir + fileName):
+            #     if os.path.isdir(imageDir):
+            #         if not os.path.isdir(bakDir):
+            #             os.mkdir(bakDir)
+            #         # moveDir(imageDir, bakDir)
+            #
+            #     else:
+            #         os.mkdir(imageDir)
+            #     urllib.request.urlretrieve(imgUrl, imageDir + fileName)
 
 
 def moveDir(src, des):
